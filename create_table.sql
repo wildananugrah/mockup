@@ -6,3 +6,11 @@ create table app_mst_user(
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP WITH TIME ZONE
 );
+
+create table app_mst_user_attribute();
+
+create table app_trx_user_role();
+
+create table app_mst_role();
+
+create table app_mst_role_attribute();

@@ -2,6 +2,11 @@ import { UserService } from "user-service";
 import { JWTService } from "jwt-service";
 import { certificate, privateKey } from "../configs/jwt.config.js";
 
+// all controllers do these following things:
+// 1. construct input 
+// 2. validate input
+// 3. call logic layer method
+// 3. return response
 export async function registerController({ username, password }, client) {
     try {
         const userService = new UserService();
