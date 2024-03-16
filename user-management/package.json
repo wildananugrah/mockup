@@ -22,7 +22,8 @@
   "jest": {
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"
-    }
+    },
+    "testTimeout": 7000
   },
   "keywords": [],
   "author": "",

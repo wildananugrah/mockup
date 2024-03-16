@@ -1,7 +1,7 @@
 import { Pool } from "pg";
+import { UserService } from "../impl/UserService";
 import { dbConnectionTimeout, dbDatabase, dbIdleTimeout, dbMaxUses, dbPass, dbPoolMax, dbPoolMin, dbPort, dbUser, dbhost, } from "./db.config";
-import { UserService } from "../index";
-const pool = new Pool({
+const config = {
     host: dbhost,
     database: dbDatabase,
     port: dbPort,
@@ -13,12 +13,14 @@ const pool = new Pool({
     idleTimeoutMillis: dbIdleTimeout,
     connectionTimeoutMillis: dbConnectionTimeout,
     maxUses: dbMaxUses,
-});
+};
+const pool = new Pool(config);
 beforeAll(async () => {
+    console.log(`Connecting to ${dbhost}:${dbPort} databases...`);
+    console.log(config);
     console.log("Starting truncate table...");
-    console.log(`dbUser: ${dbUser} dbPass: ${dbPass}`);
-    const userService = new UserService();
-    await userService.truncate(await pool.connect());
+    const userService = new UserService(await pool.connect());
+    await userService.truncate();
 });
 afterAll(() => {
     pool.end();
@@ -30,16 +32,16 @@ describe("User Service", () => {
         password: "P@ssw0rd!",
     };
     it("should be registered new user", async () => {
-        const userService = new UserService();
-        const user = await userService.register(data, await pool.connect());
+        const userService = new UserService(await pool.connect());
+        const user = await userService.register(data);
         if (user === undefined)
             fail();
         expect(user.username).toBe(data.username);
         expect(user.password).toBe(data.password);
     });
     it("should be logged in a user", async () => {
-        const userService = new UserService();
-        const user = await userService.login(data, await pool.connect());
+        const userService = new UserService(await pool.connect());
+        const user = await userService.login(data);
         if (user === undefined)
             fail();
         expect(user.username).toBe(data.username);

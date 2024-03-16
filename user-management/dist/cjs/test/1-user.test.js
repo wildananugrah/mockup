@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const pg_1 = require("pg");
+const UserService_1 = require("../impl/UserService");
 const db_config_1 = require("./db.config");
-const index_1 = require("../index");
-const pool = new pg_1.Pool({
+const config = {
     host: db_config_1.dbhost,
     database: db_config_1.dbDatabase,
     port: db_config_1.dbPort,
@@ -24,12 +24,14 @@ const pool = new pg_1.Pool({
     idleTimeoutMillis: db_config_1.dbIdleTimeout,
     connectionTimeoutMillis: db_config_1.dbConnectionTimeout,
     maxUses: db_config_1.dbMaxUses,
-});
+};
+const pool = new pg_1.Pool(config);
 beforeAll(() => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(`Connecting to ${db_config_1.dbhost}:${db_config_1.dbPort} databases...`);
+    console.log(config);
     console.log("Starting truncate table...");
-    console.log(`dbUser: ${db_config_1.dbUser} dbPass: ${db_config_1.dbPass}`);
-    const userService = new index_1.UserService();
-    yield userService.truncate(yield pool.connect());
+    const userService = new UserService_1.UserService(yield pool.connect());
+    yield userService.truncate();
 }));
 afterAll(() => {
     pool.end();
@@ -41,16 +43,16 @@ describe("User Service", () => {
         password: "P@ssw0rd!",
     };
     it("should be registered new user", () => __awaiter(void 0, void 0, void 0, function* () {
-        const userService = new index_1.UserService();
-        const user = yield userService.register(data, yield pool.connect());
+        const userService = new UserService_1.UserService(yield pool.connect());
+        const user = yield userService.register(data);
         if (user === undefined)
             fail();
         expect(user.username).toBe(data.username);
         expect(user.password).toBe(data.password);
     }));
     it("should be logged in a user", () => __awaiter(void 0, void 0, void 0, function* () {
-        const userService = new index_1.UserService();
-        const user = yield userService.login(data, yield pool.connect());
+        const userService = new UserService_1.UserService(yield pool.connect());
+        const user = yield userService.login(data);
         if (user === undefined)
             fail();
         expect(user.username).toBe(data.username);
