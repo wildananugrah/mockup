@@ -1,28 +1,28 @@
+import { UserService } from "user-management-db/UserService";
 import type { _IRoute } from "../interfaces/_route.interface";
 import type { MethodHandler } from "../interfaces/methodHandler.interface";
-import { HealthCheck } from "user-management-db/HealthCheck";
 
-export async function handleGet(_param: _IRoute): Promise<Response> {
+export async function handlePost(_param: _IRoute): Promise<Response> {
   try {
-    return new Response(
-      JSON.stringify({
-        app: true,
-        db: await new HealthCheck(await _param.dbPool.connect()).test(),
-      }),
-      {
-        status: 200,
-      }
-    );
+    const { username, password } = _param.body;
+    const user = await new UserService(await _param.dbPool.connect()).login({
+      username,
+      password,
+    });
+    return new Response(JSON.stringify(user), {
+      status: 200,
+    });
   } catch (error) {
-    return new Response(JSON.stringify({ app: false, db: false }), {
+    console.error(error);
+    return new Response(JSON.stringify(error), {
       status: 200,
     });
   }
 }
 const methodHandlers: MethodHandler = {
-  GET: handleGet,
+  POST: handlePost,
 };
-export async function healthcheckDBHandler(_param: _IRoute) {
+export async function userLoginHandler(_param: _IRoute) {
   const { method } = _param;
   if (method && Object.prototype.hasOwnProperty.call(methodHandlers, method)) {
     const handle = methodHandlers[method];

@@ -3,9 +3,7 @@ export const dbhost: string =
 export const dbDatabase: string =
   process.env.DB_DATABASE === undefined ? "postgres" : process.env.DB_DATABASE;
 export const dbPort: number =
-  process.env.DB_PORT === undefined
-    ? 8000
-    : parseInt(process.env.DB_PORT, 8000);
+  process.env.DB_PORT === undefined ? 8000 : parseInt(process.env.DB_PORT, 10);
 export const dbUser: string =
   process.env.DB_USER === undefined ? "root" : process.env.DB_USER;
 export const dbPass: string =
@@ -13,7 +11,7 @@ export const dbPass: string =
 export const dbPoolMin: number =
   process.env.DB_POOL_MIN === undefined
     ? 1
-    : parseInt(process.env.DB_POOL_MIN, 5);
+    : parseInt(process.env.DB_POOL_MIN, 10);
 export const dbPoolMax: number =
   process.env.DB_POOL_MAX === undefined
     ? 1
@@ -21,12 +19,12 @@ export const dbPoolMax: number =
 export const dbIdleTimeout: number =
   process.env.DB_IDLE_TIMEOUT === undefined
     ? 1000
-    : parseInt(process.env.DB_IDLE_TIMEOUT, 1000);
+    : parseInt(process.env.DB_IDLE_TIMEOUT, 10);
 export const dbConnectionTimeout: number =
   process.env.DB_CONNECTION_TIMEOUT === undefined
     ? 1000
-    : parseInt(process.env.DB_CONNECTION_TIMEOUT, 1000);
+    : parseInt(process.env.DB_CONNECTION_TIMEOUT, 10);
 export const dbMaxUses: number =
   process.env.DB_MAX_USES === undefined
     ? 7500
-    : parseInt(process.env.DB_MAX_USES, 7500);
+    : parseInt(process.env.DB_MAX_USES, 10);

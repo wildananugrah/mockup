@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "bun --hot src/index.ts",
-    "test": "bun test --rerun-each 3 src/test/*.test.ts"
+    "test:func": "bun test src/test/*.test.ts",
+    "test:re-run": "bun test --rerun-each 3 src/test/*.test.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
@@ -15,6 +16,8 @@
   "dependencies": {
     "@types/pg": "^8.11.2",
     "pg": "^8.11.3",
-    "pg-pool": "^3.6.1"
+    "pg-pool": "^3.6.1",
+    "user-management": "../user-management",
+    "user-management-db": "../user-management-db"
   }
 }

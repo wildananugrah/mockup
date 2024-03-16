@@ -3,4 +3,6 @@ export const appEnv =
 export const appHost =
   process.env.APP_HOST == undefined ? "0.0.0.0" : process.env.APP_HOST;
 export const appPort =
-  process.env.APP_PORT === undefined ? 8000 : parseInt(process.env.APP_PORT);
+  process.env.APP_PORT === undefined
+    ? 8000
+    : parseInt(process.env.APP_PORT, 10);
