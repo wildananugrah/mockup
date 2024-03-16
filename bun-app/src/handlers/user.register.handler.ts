@@ -1,6 +1,8 @@
 import { UserService } from "user-management-db/UserService";
 import type { _IRoute } from "../interfaces/_route.interface";
 import type { MethodHandler } from "../interfaces/methodHandler.interface";
+import { JWTService } from "jwt-service";
+import { certificate, privateKey } from "../configs/jwt.config";
 
 export async function handlePost(_param: _IRoute): Promise<Response> {
   try {
@@ -9,13 +11,19 @@ export async function handlePost(_param: _IRoute): Promise<Response> {
       username,
       password,
     });
-    return new Response(JSON.stringify(user), {
+    const token = await new JWTService({
+      privateKey: privateKey,
+      certificate: certificate,
+    }).create(user, 3600);
+    return new Response(JSON.stringify(token), {
       status: 200,
+      headers: { "Content-Type": "application/json" },
     });
   } catch (error: any) {
     console.error(error);
-    return new Response(JSON.stringify(error.message), {
-      status: 200,
+    return new Response(JSON.stringify({ message: error.message }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
     });
   }
 }

@@ -49,3 +49,7 @@ export interface UserAttributeService {
   update(role: IUserAttribute, id: string): Promise<IUserAttribute | undefined>;
   delete(id: string): Promise<IUserAttribute | undefined>;
 }
+export interface IUserLogic {
+  register(username: string, password: string): Promise<IUser | undefined>;
+  login(username: string, password: string): Promise<IUser | undefined>;
+}

@@ -1,17 +1,23 @@
 {
-  "name": "user-service",
+  "name": "user-management",
   "version": "1.0.0",
-  "description": "Typescript Todo Service",
+  "description": "Typescript User Management Logic Layer",
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",
   "exports": {
     ".": {
       "import": "./dist/mjs/index.js",
       "require": "./dist/cjs/index.js"
+    },
+    "./feature": {
+      "import": "./dist/mjs/interface.js",
+      "require": "./dist/cjs/interface.js"
     }
   },
   "scripts": {
-    "test": "jest",
+    "test:ts": "jest src/test/*.test.ts",
+    "test:mjs": "jest dist/mjs/test/*.test.js",
+    "test:cjs": "jest dist/cjs/test/*.test.js",
     "lint": "eslint . --fix",
     "build": "rm -fr dist/* && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && ./afterbuild.sh"
   },
@@ -41,10 +47,7 @@
   },
   "type": "module",
   "dependencies": {
-    "@types/pg": "^8.11.2",
     "dotenv": "^16.4.5",
-    "pg": "^8.11.3",
-    "pg-pool": "^3.6.1",
     "ts-node": "^10.9.2"
   }
 }
