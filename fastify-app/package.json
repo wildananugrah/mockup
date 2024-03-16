@@ -21,9 +21,12 @@
     "dotenv": "^16.4.5",
     "fastify": "^4.26.2",
     "fastify-plugin": "^4.5.1",
+    "jwt-service": "file:../jwt",
     "nodemon": "^3.1.0",
     "pg": "^8.11.3",
-    "pg-pool": "^3.6.1"
+    "pg-pool": "^3.6.1",
+    "user-management": "file:../user-management",
+    "user-management-db": "file:../user-management-db"
   },
   "devDependencies": {
     "@babel/core": "^7.24.0",
