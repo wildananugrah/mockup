@@ -1,11 +1,6 @@
 import fs from "fs";
 import jwt from "jsonwebtoken";
-
-export interface IJWTService {
-  create(data: any, expired: number): Promise<any>;
-  refresh(token: string, expired: number): Promise<any>;
-  validate(token: string): Promise<any>;
-}
+import { IJWTService } from "user-management/src/interfaces";
 
 export class JWTService implements IJWTService {
   privateKey: string | undefined;
@@ -41,10 +36,19 @@ export class JWTService implements IJWTService {
     if (this.certificate === undefined) return;
     var cert = fs.readFileSync(this.certificate);
     return new Promise((resolve, reject) => {
-      jwt.verify(token, cert, { algorithms: ["RS256"] }, (err, decoded) => {
-        if (err) reject(err);
-        else resolve(decoded);
-      });
+      jwt.verify(
+        token,
+        cert,
+        { algorithms: ["RS256"] },
+        (err, decoded: any) => {
+          if (err) reject(err);
+          else {
+            delete decoded.iat;
+            delete decoded.exp;
+            resolve(decoded);
+          }
+        }
+      );
     });
   }
 }

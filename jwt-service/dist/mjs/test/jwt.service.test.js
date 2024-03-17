@@ -1,8 +1,8 @@
 import { JWTService } from "../index";
 describe("JWT Service", () => {
     const data = {
-        name: "Wildan Anugrah",
-        age: 33,
+        username: "wildananugrah",
+        password: "p@ssw0rd",
     };
     const expired = 3600;
     let token = "";
@@ -22,8 +22,8 @@ describe("JWT Service", () => {
             certificate: "./keys/certificate.crt",
         });
         const result = await jwtService.validate(token);
-        expect(result?.name).toBe(data.name);
-        expect(result?.age).toBe(data.age);
+        expect(result?.username).toBe(data.username);
+        expect(result?.password).toBe(data.password);
     });
     it("should refresh token", async () => {
         let jwtService = new JWTService({
@@ -41,7 +41,7 @@ describe("JWT Service", () => {
             certificate: "./keys/certificate.crt",
         });
         const result = await jwtService.validate(token);
-        expect(result?.name).toBe(data.name);
-        expect(result?.age).toBe(data.age);
+        expect(result?.username).toBe(data.username);
+        expect(result?.password).toBe(data.password);
     });
 });

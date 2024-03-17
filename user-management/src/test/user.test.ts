@@ -1,6 +1,12 @@
-import { IUserService } from "../interfaces";
-import { UserServiceMock } from "./UserServiceMock";
-import { AppError, User } from "../user";
+import { IJWTService, IUserService } from "../interfaces";
+import { UserServiceMock } from "./mocks/UserServiceMock";
+import {
+  AppError,
+  INVALID_LOGIN_CODE,
+  INVALID_LOGIN_MESSAGE,
+  User,
+} from "../user";
+import { JWTServiceMock } from "./mocks/JWTServiceMock";
 
 beforeAll(async () => {});
 
@@ -14,11 +20,15 @@ describe("User Logic Layer", () => {
   it("should registering a user", async () => {
     try {
       const userService: IUserService = new UserServiceMock();
-      const user = new User(userService);
-      const _user = await user.register(userData.username, userData.password);
-      if (_user === undefined) fail();
-      expect(_user.username).toBe(userData.username);
-      expect(_user.password).toBe(userData.password);
+      const jwtService: IJWTService = new JWTServiceMock();
+      const userLogic = new User(userService, jwtService);
+      const result = await userLogic.register(
+        userData.username,
+        userData.password
+      );
+      if (result === undefined) fail();
+      expect(typeof result.token).toBe("string");
+      expect(typeof result.expired).toBe("number");
     } catch (error) {
       console.error(error);
       fail();
@@ -27,11 +37,15 @@ describe("User Logic Layer", () => {
   it("should logging in a user", async () => {
     try {
       const userService: IUserService = new UserServiceMock();
-      const user = new User(userService);
-      const _user = await user.login(userData.username, userData.password);
-      if (_user === undefined) fail();
-      expect(_user.username).toBe(userData.username);
-      expect(_user.password).toBe(userData.password);
+      const jwtService: IJWTService = new JWTServiceMock();
+      const userLogic = new User(userService, jwtService);
+      const result = await userLogic.login(
+        userData.username,
+        userData.password
+      );
+      if (result === undefined) fail();
+      expect(typeof result.token).toBe("string");
+      expect(typeof result.expired).toBe("number");
     } catch (error) {
       console.error(error);
       fail();
@@ -40,16 +54,18 @@ describe("User Logic Layer", () => {
   it("should logging in a user failed", async () => {
     try {
       const userService: IUserService = new UserServiceMock();
-      const user = new User(userService);
-      const _user = await user.login("wildan", userData.password + "F");
-      if (_user === undefined) fail();
-      expect(_user.username).toBe(userData.username);
-      expect(_user.password).toBe(userData.password);
+      const jwtService: IJWTService = new JWTServiceMock();
+      const userLogic = new User(userService, jwtService);
+      const result = await userLogic.login("wildan", userData.password);
+      if (result === undefined) fail();
+      expect(typeof result.token).toBe("string");
+      expect(typeof result.expired).toBe("number");
     } catch (error: any) {
-      expect(error instanceof AppError).toBeTruthy();
+      console.error(error);
+      expect(error).toBeInstanceOf(AppError);
       if (error instanceof AppError) {
-        expect(error.code).toBe("E01");
-        expect(error.message).toBe("Can not login user!");
+        expect(error.code).toBe(INVALID_LOGIN_CODE);
+        expect(error.message).toBe(INVALID_LOGIN_MESSAGE);
       }
     }
   });

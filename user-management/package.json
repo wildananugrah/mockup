@@ -5,13 +5,17 @@
   "main": "dist/cjs/index.js",
   "module": "dist/mjs/index.js",
   "exports": {
-    ".": {
-      "import": "./dist/mjs/index.js",
-      "require": "./dist/cjs/index.js"
+    "./user": {
+      "import": "./dist/mjs/user.js",
+      "require": "./dist/cjs/user.js"
     },
-    "./feature": {
-      "import": "./dist/mjs/interface.js",
-      "require": "./dist/cjs/interface.js"
+    "./interface": {
+      "import": "./dist/mjs/interfaces.js",
+      "require": "./dist/cjs/interfaces.js"
+    },
+    "./error": {
+      "import": "./dist/mjs/errors.js",
+      "require": "./dist/cjs/errors.js"
     }
   },
   "scripts": {
@@ -25,6 +29,10 @@
     "src": "src",
     "test": "test"
   },
+  "moduleDirectories": [
+    "node_modules",
+    "src"
+  ],
   "jest": {
     "transform": {
       "^.+\\.[t|j]sx?$": "babel-jest"

@@ -31,8 +31,11 @@ export class JWTService {
             jwt.verify(token, cert, { algorithms: ["RS256"] }, (err, decoded) => {
                 if (err)
                     reject(err);
-                else
+                else {
+                    delete decoded.iat;
+                    delete decoded.exp;
                     resolve(decoded);
+                }
             });
         });
     }

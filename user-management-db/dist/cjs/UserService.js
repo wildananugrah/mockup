@@ -49,7 +49,7 @@ class UserService {
             catch (error) {
                 console.error(error);
                 if (error instanceof Error)
-                    throw new Error(`Error in creating todo: ${error.message}`);
+                    throw new Error(`Error in creating user: ${error.message}`);
             }
             finally {
                 this.client.release();
@@ -60,6 +60,8 @@ class UserService {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const dbResult = yield this.client.query(this.selectByUsernameAndPassword, [user.username, user.password]);
+                if (dbResult.rows.length === 0)
+                    return undefined;
                 return {
                     id: dbResult.rows[0].id,
                     username: dbResult.rows[0].username,
@@ -69,7 +71,7 @@ class UserService {
             catch (error) {
                 console.error(error);
                 if (error instanceof Error)
-                    throw new Error(`Error in creating todo: ${error.message}`);
+                    throw new Error(`Error in retrieving user: ${error.message}`);
             }
             finally {
                 this.client.release();

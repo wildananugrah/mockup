@@ -18,7 +18,16 @@ export interface IUserAttribute {
   id?: string;
   userId: string;
   appName: string;
-  attributeName: string;
+  attributeName: string[];
+}
+export interface IToken {
+  token: string;
+  expired: number;
+}
+export interface IJWTService {
+  create(data: any, expired: number): Promise<IToken>;
+  refresh(token: string, expired: number): Promise<IToken>;
+  validate(token: string): Promise<any>;
 }
 export interface IUserService {
   register(user: IUser): Promise<IUser | undefined>;
@@ -41,15 +50,20 @@ export interface IRoleAttributeService {
   update(role: IRoleAttribute, id: string): Promise<IRoleAttribute | undefined>;
   delete(id: string): Promise<IRoleAttribute | undefined>;
 }
-export interface UserAttributeService {
+export interface IUserAttributeService {
   truncate(): Promise<void>;
-  insert(role: IUserAttribute): Promise<IUserAttribute | undefined>;
-  list(): Promise<IUserAttribute[] | undefined>;
+  insert(userAttribute: IUserAttribute): Promise<IUserAttribute | undefined>;
+  list(userId: string): Promise<IUserAttribute[] | undefined>;
   detail(id: string): Promise<IUserAttribute | undefined>;
-  update(role: IUserAttribute, id: string): Promise<IUserAttribute | undefined>;
-  delete(id: string): Promise<IUserAttribute | undefined>;
+  update(
+    userAttribute: IUserAttribute,
+    id: string
+  ): Promise<IUserAttribute | undefined>;
+  delete(userId: string): Promise<IUserAttribute | undefined>;
 }
 export interface IUserLogic {
-  register(username: string, password: string): Promise<IUser | undefined>;
-  login(username: string, password: string): Promise<IUser | undefined>;
+  register(username: string, password: string): Promise<IToken | undefined>;
+  login(username: string, password: string): Promise<IToken | undefined>;
+  validateToken(token: string): Promise<IUser | undefined>;
+  refreshToken(token: string, expired: number): Promise<IToken | undefined>;
 }

@@ -9,10 +9,27 @@ Content-Type: application/json
 }
 
 ###
+# @name Login
 POST {{host}}/api/users/login
 Content-Type: application/json
 
 {
-    "username": "wildananugra",
+    "username": "wildananugrah",
     "password": "p@ssw0rd"
+}
+
+###
+@token={{Login.response.body.token}}
+###
+GET {{host}}/api/users/info
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+###
+PUT {{host}}/api/token
+Content-Type: application/json
+
+{
+    "token": "{{token}}",
+    "expired": 7200
 }

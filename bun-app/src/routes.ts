@@ -1,4 +1,5 @@
 import { healthcheckDBHandler } from "./handlers/healthcheck.handler";
+import { jwtHandler } from "./handlers/jwt.handler";
 import { system1Handler } from "./handlers/system1.handler";
 import { system2Handler } from "./handlers/system2.handler";
 import { system3Handler } from "./handlers/system3.handler";
@@ -25,5 +26,11 @@ export const routes: MethodHandler = {
   },
   "/api/users/login": async (_param: _IRoute): Promise<Response> => {
     return await userLoginHandler(_param);
+  },
+  "/api/users/info": async (_param: _IRoute): Promise<Response> => {
+    return await jwtHandler(_param);
+  },
+  "/api/token": async (_param: _IRoute): Promise<Response> => {
+    return await jwtHandler(_param);
   },
 };

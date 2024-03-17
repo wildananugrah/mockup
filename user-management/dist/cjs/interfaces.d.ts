@@ -20,6 +20,15 @@ export interface IUserAttribute {
     appName: string;
     attributeName: string;
 }
+export interface IToken {
+    token: string;
+    expired: number;
+}
+export interface IJWTService {
+    create(data: any, expired: number): Promise<IToken>;
+    refresh(token: string, expired: number): Promise<IToken>;
+    validate(token: string): Promise<IUser>;
+}
 export interface IUserService {
     register(user: IUser): Promise<IUser | undefined>;
     login(user: IUser): Promise<IUser | undefined>;
@@ -50,6 +59,8 @@ export interface UserAttributeService {
     delete(id: string): Promise<IUserAttribute | undefined>;
 }
 export interface IUserLogic {
-    register(username: string, password: string): Promise<IUser | undefined>;
-    login(username: string, password: string): Promise<IUser | undefined>;
+    register(username: string, password: string): Promise<IToken | undefined>;
+    login(username: string, password: string): Promise<IToken | undefined>;
+    validateToken(token: string): Promise<IUser | undefined>;
+    refreshToken(token: string, expired: number): Promise<IToken | undefined>;
 }

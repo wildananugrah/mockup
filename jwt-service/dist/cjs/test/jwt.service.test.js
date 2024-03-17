@@ -12,8 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../index");
 describe("JWT Service", () => {
     const data = {
-        name: "Wildan Anugrah",
-        age: 33,
+        username: "wildananugrah",
+        password: "p@ssw0rd",
     };
     const expired = 3600;
     let token = "";
@@ -33,8 +33,8 @@ describe("JWT Service", () => {
             certificate: "./keys/certificate.crt",
         });
         const result = yield jwtService.validate(token);
-        expect(result === null || result === void 0 ? void 0 : result.name).toBe(data.name);
-        expect(result === null || result === void 0 ? void 0 : result.age).toBe(data.age);
+        expect(result === null || result === void 0 ? void 0 : result.username).toBe(data.username);
+        expect(result === null || result === void 0 ? void 0 : result.password).toBe(data.password);
     }));
     it("should refresh token", () => __awaiter(void 0, void 0, void 0, function* () {
         let jwtService = new index_1.JWTService({
@@ -52,7 +52,7 @@ describe("JWT Service", () => {
             certificate: "./keys/certificate.crt",
         });
         const result = yield jwtService.validate(token);
-        expect(result === null || result === void 0 ? void 0 : result.name).toBe(data.name);
-        expect(result === null || result === void 0 ? void 0 : result.age).toBe(data.age);
+        expect(result === null || result === void 0 ? void 0 : result.username).toBe(data.username);
+        expect(result === null || result === void 0 ? void 0 : result.password).toBe(data.password);
     }));
 });
