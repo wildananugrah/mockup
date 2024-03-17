@@ -16,7 +16,7 @@ import { UserService } from 'user-management-db/UserService';
 import { UserRoleTrxService } from 'user-management-db/UserRoleTrxService';
 import { User, AppError } from 'user-management/user';
 import { JWTService } from 'jwt-service';
-// import { JwtConfig } from 'src/config/jwt.config';
+import { certificate, privateKey } from 'src/config/jwt.config';
 
 @Controller('api')
 @Injectable()
@@ -41,7 +41,7 @@ export class ApiController {
     try {
       const userService = new UserService(await this.conn.connect());
       const jwtService = new JWTService({
-        privateKey: './keys/key.key',
+        privateKey: privateKey,
         certificate: './keys/certificate.crt',
       });
       const userRoleTrxService = new UserRoleTrxService(
@@ -69,8 +69,8 @@ export class ApiController {
     try {
       const userService = new UserService(await this.conn.connect());
       const jwtService = new JWTService({
-        privateKey: './keys/key.key',
-        certificate: './keys/certificate.crt',
+        privateKey: privateKey,
+        certificate: certificate,
       });
       const userRoleTrxService = new UserRoleTrxService(
         await this.conn.connect(),
@@ -97,7 +97,7 @@ export class ApiController {
   ): Promise<any> {
     try {
       const jwtService = new JWTService({
-        privateKey: './keys/key.key',
+        privateKey: privateKey,
         certificate: './keys/certificate.crt',
       });
       const token = headers.authorization.split(' ')[1];
@@ -123,7 +123,7 @@ export class ApiController {
   ): Promise<any> {
     try {
       const jwtService = new JWTService({
-        privateKey: './keys/key.key',
+        privateKey: privateKey,
         certificate: './keys/certificate.crt',
       });
       const token = await jwtService.refresh(
