@@ -3,6 +3,15 @@ const dotenv = require('dotenv');
 
 dotenv.config();
 
+const appEnv =
+    process.env.APP_ENV === undefined ? "development" : process.env.APP_ENV;
+const appHost =
+    process.env.APP_HOST == undefined ? "0.0.0.0" : process.env.APP_HOST;
+const appPort =
+    process.env.APP_PORT === undefined
+        ? 8000
+        : parseInt(process.env.APP_PORT, 10);
+
 const dbhost =
     process.env.DB_HOST === undefined ? "localhost" : process.env.DB_HOST;
 const dbDatabase =
@@ -45,6 +54,9 @@ const certificate =
 
 // Exporting using module.exports instead of export
 module.exports = {
+    appEnv,
+    appHost,
+    appPort,
     dbhost,
     dbDatabase,
     dbPort,

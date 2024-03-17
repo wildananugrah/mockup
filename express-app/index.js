@@ -1,16 +1,15 @@
-const express = require('express')
-const app = express()
-const port = 3000
-
-app.use(express.json());
-
+const express = require('express');
 const { pool } = require('./database');
 const { HealthCheck } = require('user-management-db/HealthCheck');
 const { UserService } = require('user-management-db/UserService');
 const { UserRoleTrxService } = require('user-management-db/UserRoleTrxService');
 const { User, AppError } = require('user-management/user');
 const { JWTService } = require('jwt-service');
-const { privateKey, certificate } = require('./config');
+const { privateKey, certificate, appPort, appHost, appEnv } = require('./config');
+
+const app = express()
+
+app.use(express.json());
 
 app.get('/_/healthcheck', async (req, res) => {
     try {
@@ -107,7 +106,7 @@ app.put('/api/token', async (req, res) => {
     }
 });
 
-app.listen(port, async () => {
+app.listen(appPort, appHost, async () => {
     const db = await new HealthCheck(await pool.connect()).test();
-    console.log(`Example app listening on port ${port}`)
+    console.log(`Example app listening on port http://${appHost}:${appPort} in ${appEnv}`)
 })

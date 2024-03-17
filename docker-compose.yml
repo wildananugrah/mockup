@@ -27,6 +27,8 @@ services:
       - CERTIFICATE_FILE=./keys/certificate.crt
     networks:
       app-net: {}
+    depends_on:
+      - database
 
   bun-app:
     build:
@@ -54,6 +56,66 @@ services:
       - CERTIFICATE_FILE=./keys/certificate.crt
     networks:
       app-net: {}
+    depends_on:
+      - database
+
+  express-app:
+    build:
+      context: ./
+      dockerfile: ./express-app.Dockerfile
+    container_name: express-app
+    restart: always
+    ports:
+      - 34000:4000
+    environment:
+      - APP_ENV=development
+      - APP_HOST=0.0.0.0
+      - APP_PORT=4000
+      - DB_HOST=database
+      - DB_DATABASE=postgres
+      - DB_PORT=5432
+      - DB_USER=pg
+      - DB_PASS=p0stgr3s
+      - DB_POOL_MIN=5
+      - DB_POOL_MAX=10
+      - DB_IDLE_TIMEOUT=1000
+      - DB_CONNECTION_TIMEOUT=1000
+      - DB_MAX_USES=7500
+      - PRIVATE_KEY_FILE=./keys/key.key
+      - CERTIFICATE_FILE=./keys/certificate.crt
+    networks:
+      app-net: {}
+    depends_on:
+      - database
+
+  nestjs-app:
+    build:
+      context: ./
+      dockerfile: ./nestjs-app.Dockerfile
+    container_name: nestjs-app
+    restart: always
+    ports:
+      - 44000:3000
+    environment:
+      - APP_ENV=development
+      - APP_HOST=0.0.0.0
+      - APP_PORT=3000
+      - DB_HOST=database
+      - DB_DATABASE=postgres
+      - DB_PORT=5432
+      - DB_USER=pg
+      - DB_PASS=p0stgr3s
+      - DB_POOL_MIN=5
+      - DB_POOL_MAX=10
+      - DB_IDLE_TIMEOUT=1000
+      - DB_CONNECTION_TIMEOUT=1000
+      - DB_MAX_USES=7500
+      - PRIVATE_KEY_FILE=./keys/key.key
+      - CERTIFICATE_FILE=./keys/certificate.crt
+    networks:
+      app-net: {}
+    depends_on:
+      - database
 
   database:
     image: postgres:alpine
