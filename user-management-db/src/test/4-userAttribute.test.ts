@@ -42,17 +42,17 @@ beforeAll(async () => {
     await pool.connect()
   );
   await UserAttribute.truncate();
-  console.log("Starting truncate Role table...");
-  const role: IUserService = new UserService(await pool.connect());
-  await role.truncate();
+  console.log("Starting truncate User table...");
+  const user: IUserService = new UserService(await pool.connect());
+  await user.truncate();
 });
 
 afterAll(async () => {
   await pool.end();
 });
 
-describe("Role Service", () => {
-  let UserAttributeId: string | undefined = undefined;
+describe("User Service", () => {
+  let userAttributeId: string | undefined = undefined;
   const userData = {
     username: "wildananugrah",
     password: "p@ssw0rd",
@@ -67,14 +67,76 @@ describe("Role Service", () => {
     appName: "testAppUpdate",
     attributeName: ["READ"],
   };
-  it("it should create a role", async () => {
+  it("it should create a user", async () => {
     const userService: IUserService = new UserService(await pool.connect());
     const dbUser = await userService.register(userData);
-    if (dbUser === undefined) fail();
+    if (dbUser === undefined) throw new Error(`Can not register user`);
+    console.log(dbUser);
+    data.userId = dbUser.id === undefined ? "" : dbUser.id;
   });
-  it("it should create a role attribute", async () => {});
-  it("it should select all role attribute", async () => {});
-  it("it should update a role", async () => {});
-  it("it should select a role by id", async () => {});
-  it("it should delete a role by id", async () => {});
+  it("it should create a user attribute", async () => {
+    const userAttributeService: IUserAttributeService =
+      new UserAttributeService(await pool.connect());
+    const dbUserAttribute = await userAttributeService.insert(data);
+    if (dbUserAttribute === undefined)
+      throw new Error(`Can not insert user attribute`);
+    expect(dbUserAttribute.userId).toBe(data.userId);
+    expect(dbUserAttribute.appName).toBe(data.appName);
+    dbUserAttribute.attributeName.map((attributeName, index) => {
+      expect(attributeName).toBe(data.attributeName[index]);
+    });
+    userAttributeId = dbUserAttribute.id;
+  });
+  it("it should select all user attribute", async () => {
+    const userAttributeService: IUserAttributeService =
+      new UserAttributeService(await pool.connect());
+    const userAttributeList = await userAttributeService.list(data.userId);
+    if (userAttributeList === undefined)
+      throw new Error(`Can not retrieve user attributes`);
+    userAttributeList.map((userAttribute, index) => {
+      expect(userAttribute.appName).toBe(data.appName);
+      expect(userAttribute.userId).toBe(data.userId);
+      expect(typeof userAttribute.id).toBe("string");
+      userAttribute.attributeName.map((attributeName, index) => {
+        expect(attributeName).toBe(data.attributeName[index]);
+      });
+    });
+  });
+  it("it should update a user", async () => {
+    if (userAttributeId === undefined) fail();
+    const userAttributeService: IUserAttributeService =
+      new UserAttributeService(await pool.connect());
+    const dbUserAttribute = await userAttributeService.update(
+      updatedData,
+      userAttributeId
+    );
+    if (dbUserAttribute === undefined) fail();
+    expect(dbUserAttribute.appName).toBe(updatedData.appName);
+    expect(dbUserAttribute.userId).toBe(data.userId);
+    dbUserAttribute.attributeName.map((attribute, index) => {
+      expect(updatedData.attributeName[index]).toBe(attribute);
+    });
+  });
+  it("it should select a user by id", async () => {
+    if (userAttributeId === undefined) fail();
+    const userAttributeService: IUserAttributeService =
+      new UserAttributeService(await pool.connect());
+    const dbUserAttribute = await userAttributeService.detail(userAttributeId);
+    if (dbUserAttribute === undefined) fail();
+    expect(dbUserAttribute.appName).toBe(updatedData.appName);
+    expect(dbUserAttribute.userId).toBe(data.userId);
+    dbUserAttribute.attributeName.map((attribute, index) => {
+      expect(updatedData.attributeName[index]).toBe(attribute);
+    });
+  });
+  it("it should delete a user by id", async () => {
+    if (userAttributeId === undefined) fail();
+    const userAttributeService: IUserAttributeService =
+      new UserAttributeService(await pool.connect());
+    const dbUserAttribute = await userAttributeService.delete(userAttributeId);
+    const userAttributeService2: IUserAttributeService =
+      new UserAttributeService(await pool.connect());
+    const dbRoleAttribute = await userAttributeService2.detail(userAttributeId);
+    expect(dbRoleAttribute).toBeUndefined();
+  });
 });

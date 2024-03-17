@@ -59,6 +59,8 @@ describe("User Service", () => {
     const userService: IUserService = new UserService(await pool.connect());
     const user = await userService.login(data);
     if (user === undefined) fail();
+    console.log(user);
+    expect(typeof user.id).toBe("string");
     expect(user.username).toBe(data.username);
     expect(user.password).toBe(data.password);
   });

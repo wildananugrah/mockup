@@ -9,7 +9,7 @@ import { PoolClient } from "pg";
 export class UserService implements IUserService {
   tblName: string = "tbl_mst_user";
   deleteAllRecordsQuery: string = `DELETE FROM ${this.tblName}`;
-  selectByUsernameAndPassword: string = `SELECT * FROM ${this.tblName} WHERE username=$1 and password=$2`;
+  selectByUsername: string = `SELECT * FROM ${this.tblName} WHERE username=$1`;
   insertUser: string = `INSERT INTO ${this.tblName} (username, password) VALUES ($1, $2) RETURNING *`;
   client: PoolClient;
   constructor(client: PoolClient) {
@@ -32,8 +32,9 @@ export class UserService implements IUserService {
         user.username,
         user.password,
       ]);
+      console.log(dbResult);
       return {
-        id: dbResult.rows[0].id,
+        id: dbResult.rows[0].user_id,
         username: dbResult.rows[0].username,
         password: dbResult.rows[0].password,
       };
@@ -47,13 +48,12 @@ export class UserService implements IUserService {
   }
   async login(user: IUser): Promise<IUser | undefined> {
     try {
-      const dbResult = await this.client.query(
-        this.selectByUsernameAndPassword,
-        [user.username, user.password]
-      );
+      const dbResult = await this.client.query(this.selectByUsername, [
+        user.username,
+      ]);
       if (dbResult.rows.length === 0) return undefined;
       return {
-        id: dbResult.rows[0].id,
+        id: dbResult.rows[0].user_id,
         username: dbResult.rows[0].username,
         password: dbResult.rows[0].password,
       };
