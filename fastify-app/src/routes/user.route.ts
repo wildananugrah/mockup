@@ -2,6 +2,7 @@ import { JWTService } from "jwt-service";
 import { UserService } from "user-management-db/UserService";
 import { AppError, User } from "user-management/user";
 import { certificate, privateKey } from "../configs/jwt.config";
+import { UserRoleTrxService } from "user-management-db/UserRoleTrxService";
 
 const routes = async (app: any, options: any) => {
   app.route({
@@ -14,7 +15,10 @@ const routes = async (app: any, options: any) => {
           privateKey: privateKey,
           certificate: certificate,
         });
-        const user = new User(userService, jwtService);
+        const userRoleTrxService = new UserRoleTrxService(
+          await app.dbPool.connect()
+        );
+        const user = new User(userService, userRoleTrxService, jwtService);
         const { username, password } = req.body;
         return res.status(200).send(await user.register(username, password));
       } catch (error: any) {
@@ -37,7 +41,10 @@ const routes = async (app: any, options: any) => {
           privateKey: privateKey,
           certificate: certificate,
         });
-        const user = new User(userService, jwtService);
+        const userRoleTrxService = new UserRoleTrxService(
+          await app.dbPool.connect()
+        );
+        const user = new User(userService, userRoleTrxService, jwtService);
         const { username, password } = req.body;
         return res.status(200).send(await user.login(username, password));
       } catch (error: any) {

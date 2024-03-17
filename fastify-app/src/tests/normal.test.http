@@ -26,6 +26,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ###
+# @name RefreshToken
 PUT {{host}}/api/token
 Content-Type: application/json
 
@@ -33,3 +34,10 @@ Content-Type: application/json
     "token": "{{token}}",
     "expired": 7200
 }
+###
+@tokenRefreshed={{RefreshToken.response.body.token}}
+
+###
+GET {{host}}/api/users/info
+Content-Type: application/json
+Authorization: Bearer {{tokenRefreshed}}

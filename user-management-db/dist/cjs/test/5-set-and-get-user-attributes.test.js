@@ -34,7 +34,7 @@ beforeAll(() => __awaiter(void 0, void 0, void 0, function* () { }));
 afterAll(() => __awaiter(void 0, void 0, void 0, function* () {
     yield pool.end();
 }));
-describe("Set and Get User Attribuets", () => {
+describe("Set and Get User Attributes", () => {
     let userId = "";
     let roleId = "";
     const userData = {
@@ -137,6 +137,22 @@ describe("Set and Get User Attribuets", () => {
         dbUserAttribute.attributeName.map((attributeName, index) => {
             expect(attributeName).toBe(userAttributeData.attributeName[index]);
         });
+    }));
+    it("it should create a user role trx", () => __awaiter(void 0, void 0, void 0, function* () {
+        const userRoleTrxService = new UserRoleTrxService_1.UserRoleTrxService(yield pool.connect());
+        if (userId === undefined)
+            throw new Error("userid is undefined");
+        if (roleId === undefined)
+            throw new Error("roleid is undefined");
+        const dbUserRole = yield userRoleTrxService.insert({
+            roleId: roleId,
+            userId: userId,
+        });
+        if (dbUserRole === undefined)
+            throw new Error(`Can not insert user role`);
+        expect(dbUserRole.userId).toBe(userId);
+        expect(dbUserRole.roleId).toBe(roleId);
+        expect(typeof dbUserRole.id).toBe("string");
     }));
     it("should get user attributes", () => __awaiter(void 0, void 0, void 0, function* () {
         if (userId === undefined)

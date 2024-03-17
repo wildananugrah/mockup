@@ -20,6 +20,18 @@
     "./RoleService": {
       "import": "./dist/mjs/RoleService.js",
       "require": "./dist/cjs/RoleService.js"
+    },
+    "./RoleAttributeService": {
+      "import": "./dist/mjs/RoleAttributeService.js",
+      "require": "./dist/cjs/RoleAttributeService.js"
+    },
+    "./UserAttributeService": {
+      "import": "./dist/mjs/UserAttributeService.js",
+      "require": "./dist/cjs/UserAttributeService.js"
+    },
+    "./UserRoleTrxService": {
+      "import": "./dist/mjs/UserRoleTrxService.js",
+      "require": "./dist/cjs/UserRoleTrxService.js"
     }
   },
   "scripts": {

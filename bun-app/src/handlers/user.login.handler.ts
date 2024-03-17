@@ -4,6 +4,7 @@ import type { MethodHandler } from "../interfaces/methodHandler.interface";
 import { certificate, privateKey } from "../configs/jwt.config";
 import { JWTService } from "jwt-service";
 import { AppError, User } from "user-management/user";
+import { UserRoleTrxService } from "user-management-db/UserRoleTrxService";
 
 export async function handlePost(_param: _IRoute): Promise<Response> {
   try {
@@ -13,7 +14,10 @@ export async function handlePost(_param: _IRoute): Promise<Response> {
       privateKey: privateKey,
       certificate: certificate,
     });
-    const user = new User(userService, jwtService);
+    const userRoleTrxService = new UserRoleTrxService(
+      await _param.dbPool.connect()
+    );
+    const user = new User(userService, userRoleTrxService, jwtService);
     return new Response(JSON.stringify(await user.login(username, password)), {
       status: 200,
       headers: { "Content-Type": "application/json" },

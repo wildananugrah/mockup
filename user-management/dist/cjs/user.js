@@ -9,9 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = exports.AppError = exports.REGISTER_FAILED_MESSAGE = exports.REGISTER_FAILED_CODE = exports.INVALID_LOGIN_MESSAGE = exports.INVALID_LOGIN_CODE = void 0;
-exports.INVALID_LOGIN_CODE = "UM404";
-exports.INVALID_LOGIN_MESSAGE = "Username / password is invalid!";
+exports.User = exports.AppError = exports.REGISTER_FAILED_MESSAGE = exports.REGISTER_FAILED_CODE = exports.INVALID_PASSWORD_MESSAGE = exports.INVALID_PASSWORD_CODE = exports.INVALID_USERNAME_MESSAGE = exports.INVALID_USERNAME_CODE = void 0;
+exports.INVALID_USERNAME_CODE = "UM404";
+exports.INVALID_USERNAME_MESSAGE = "Username is invalid!";
+exports.INVALID_PASSWORD_CODE = "UM400";
+exports.INVALID_PASSWORD_MESSAGE = "Password is invalid!";
 exports.REGISTER_FAILED_CODE = "UM400";
 exports.REGISTER_FAILED_MESSAGE = "System can not register the user!";
 class AppError extends Error {
@@ -24,9 +26,10 @@ class AppError extends Error {
 }
 exports.AppError = AppError;
 class User {
-    constructor(userService, jwtService) {
+    constructor(userService, userRoleTrxService, jwtService) {
         this.userService = userService;
         this.jwtService = jwtService;
+        this.userRoleTrxService = userRoleTrxService;
     }
     login(username, password) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -34,9 +37,12 @@ class User {
                 username: username,
                 password: password,
             });
-            if (user === undefined)
-                throw new AppError(exports.INVALID_LOGIN_CODE, exports.INVALID_LOGIN_MESSAGE);
-            return yield this.jwtService.create(user, 3600);
+            if (user === undefined || user.id === undefined)
+                throw new AppError(exports.INVALID_USERNAME_CODE, exports.INVALID_USERNAME_MESSAGE);
+            if (user.password !== password)
+                throw new AppError(exports.INVALID_PASSWORD_CODE, exports.INVALID_PASSWORD_MESSAGE);
+            const userRole = yield this.userRoleTrxService.list(user.id);
+            return yield this.jwtService.create({ user, userRole }, 3600);
         });
     }
     register(username, password) {

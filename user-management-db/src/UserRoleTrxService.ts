@@ -1,6 +1,5 @@
 import { PoolClient } from "pg";
 import {
-  IUser,
   IUserAttribute,
   IUserRoleTrx,
   IUserRoleTrxService,
@@ -13,7 +12,7 @@ export class UserRoleTrxService implements IUserRoleTrxService {
   `;
   insertIntoQuery: string = `
     insert into tbl_trx_user_role (user_id , role_id)
-    values($1, $2);
+    values($1, $2) returning *;
   `;
   selectUserAttribute: string = `
     select * from (select 

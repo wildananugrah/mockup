@@ -23,7 +23,7 @@ beforeAll(async () => { });
 afterAll(async () => {
     await pool.end();
 });
-describe("Set and Get User Attribuets", () => {
+describe("Set and Get User Attributes", () => {
     let userId = "";
     let roleId = "";
     const userData = {
@@ -126,6 +126,22 @@ describe("Set and Get User Attribuets", () => {
         dbUserAttribute.attributeName.map((attributeName, index) => {
             expect(attributeName).toBe(userAttributeData.attributeName[index]);
         });
+    });
+    it("it should create a user role trx", async () => {
+        const userRoleTrxService = new UserRoleTrxService(await pool.connect());
+        if (userId === undefined)
+            throw new Error("userid is undefined");
+        if (roleId === undefined)
+            throw new Error("roleid is undefined");
+        const dbUserRole = await userRoleTrxService.insert({
+            roleId: roleId,
+            userId: userId,
+        });
+        if (dbUserRole === undefined)
+            throw new Error(`Can not insert user role`);
+        expect(dbUserRole.userId).toBe(userId);
+        expect(dbUserRole.roleId).toBe(roleId);
+        expect(typeof dbUserRole.id).toBe("string");
     });
     it("should get user attributes", async () => {
         if (userId === undefined)

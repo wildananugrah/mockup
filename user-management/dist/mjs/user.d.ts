@@ -1,6 +1,8 @@
-import { IJWTService, IToken, IUser, IUserLogic, IUserService } from "interfaces";
-export declare const INVALID_LOGIN_CODE: string;
-export declare const INVALID_LOGIN_MESSAGE: string;
+import { IJWTService, IToken, IUser, IUserLogic, IUserRoleTrxService, IUserService } from "interfaces";
+export declare const INVALID_USERNAME_CODE: string;
+export declare const INVALID_USERNAME_MESSAGE: string;
+export declare const INVALID_PASSWORD_CODE: string;
+export declare const INVALID_PASSWORD_MESSAGE: string;
 export declare const REGISTER_FAILED_CODE: string;
 export declare const REGISTER_FAILED_MESSAGE: string;
 export declare class AppError extends Error {
@@ -11,7 +13,8 @@ export declare class AppError extends Error {
 export declare class User implements IUserLogic {
     userService: IUserService;
     jwtService: IJWTService;
-    constructor(userService: IUserService, jwtService: IJWTService);
+    userRoleTrxService: IUserRoleTrxService;
+    constructor(userService: IUserService, userRoleTrxService: IUserRoleTrxService, jwtService: IJWTService);
     login(username: string, password: string): Promise<IToken | undefined>;
     register(username: string, password: string): Promise<IToken | undefined>;
     validateToken(token: string): Promise<IUser | undefined>;

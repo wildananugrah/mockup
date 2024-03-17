@@ -1,5 +1,7 @@
-export const INVALID_LOGIN_CODE = "UM404";
-export const INVALID_LOGIN_MESSAGE = "Username / password is invalid!";
+export const INVALID_USERNAME_CODE = "UM404";
+export const INVALID_USERNAME_MESSAGE = "Username is invalid!";
+export const INVALID_PASSWORD_CODE = "UM400";
+export const INVALID_PASSWORD_MESSAGE = "Password is invalid!";
 export const REGISTER_FAILED_CODE = "UM400";
 export const REGISTER_FAILED_MESSAGE = "System can not register the user!";
 export class AppError extends Error {
@@ -15,18 +17,23 @@ export class AppError extends Error {
 export class User {
     userService;
     jwtService;
-    constructor(userService, jwtService) {
+    userRoleTrxService;
+    constructor(userService, userRoleTrxService, jwtService) {
         this.userService = userService;
         this.jwtService = jwtService;
+        this.userRoleTrxService = userRoleTrxService;
     }
     async login(username, password) {
         const user = await this.userService.login({
             username: username,
             password: password,
         });
-        if (user === undefined)
-            throw new AppError(INVALID_LOGIN_CODE, INVALID_LOGIN_MESSAGE);
-        return await this.jwtService.create(user, 3600);
+        if (user === undefined || user.id === undefined)
+            throw new AppError(INVALID_USERNAME_CODE, INVALID_USERNAME_MESSAGE);
+        if (user.password !== password)
+            throw new AppError(INVALID_PASSWORD_CODE, INVALID_PASSWORD_MESSAGE);
+        const userRole = await this.userRoleTrxService.list(user.id);
+        return await this.jwtService.create({ user, userRole }, 3600);
     }
     async register(username, password) {
         const user = await this.userService.register({

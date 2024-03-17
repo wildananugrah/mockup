@@ -5,7 +5,7 @@ export class UserRoleTrxService {
   `;
     insertIntoQuery = `
     insert into tbl_trx_user_role (user_id , role_id)
-    values($1, $2);
+    values($1, $2) returning *;
   `;
     selectUserAttribute = `
     select * from (select 

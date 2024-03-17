@@ -18,7 +18,7 @@ class UserRoleTrxService {
   `;
         this.insertIntoQuery = `
     insert into tbl_trx_user_role (user_id , role_id)
-    values($1, $2);
+    values($1, $2) returning *;
   `;
         this.selectUserAttribute = `
     select * from (select 

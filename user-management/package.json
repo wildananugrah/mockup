@@ -12,16 +12,12 @@
     "./interface": {
       "import": "./dist/mjs/interfaces.js",
       "require": "./dist/cjs/interfaces.js"
-    },
-    "./error": {
-      "import": "./dist/mjs/errors.js",
-      "require": "./dist/cjs/errors.js"
     }
   },
   "scripts": {
-    "test:ts": "jest src/test/*.test.ts",
-    "test:mjs": "jest dist/mjs/test/*.test.js",
-    "test:cjs": "jest dist/cjs/test/*.test.js",
+    "test:ts": "jest -i src/test/*.test.ts",
+    "test:mjs": "jest -i dist/mjs/test/*.test.js",
+    "test:cjs": "jest -i dist/cjs/test/*.test.js",
     "lint": "eslint . --fix",
     "build": "rm -fr dist/* && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && ./afterbuild.sh"
   },
