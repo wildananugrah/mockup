@@ -1,11 +1,25 @@
-export class RoleAttributeService {
-    tblName = "tbl_mst_role_attribute";
-    deleteAllRecordsQuery = `DELETE FROM ${this.tblName}`;
-    insertRoleQuery = `INSERT INTO ${this.tblName}(role_id, app_name, attribute_name) VALUES($1, $2, $3) RETURNING *`;
-    selectAllRecordsQuery = `SELECT role_id, app_name, attribute_name FROM ${this.tblName} WHERE role_id = $1`;
-    selectByIdRecordsQuery = `SELECT role_id, app_name, attribute_name FROM ${this.tblName} WHERE role_attribute_id = $1`;
-    updateRoleQuery = `UPDATE ${this.tblName} SET app_name = $1, attribute_name = $2 WHERE role_attribute_id = $3 RETURNING *`;
-    deleteByIdRecordsQuery = `DELETE FROM ${this.tblName} WHERE role_attribute_id = $1 RETURNING *`;
+export class UserAttributeService {
+    tblName = "tbl_mst_user_attribute";
+    deleteAllRecordsQuery = `
+  DELETE FROM ${this.tblName}`;
+    insertQuery = `
+  INSERT INTO ${this.tblName}(user_id, app_name, attribute_name) 
+  VALUES($1, $2, $3) RETURNING *`;
+    selectAllRecordsQuery = `
+  SELECT 
+  user_attribute_id, user_id, app_name, attribute_name 
+  FROM ${this.tblName} WHERE user_id = $1`;
+    selectByIdRecordsQuery = `
+  SELECT 
+  user_attribute_id, user_id, app_name, attribute_name 
+  FROM ${this.tblName} WHERE user_attribute_id = $1`;
+    updateQuery = `
+  UPDATE ${this.tblName} 
+  SET app_name = $1, attribute_name = $2 
+  WHERE user_attribute_id = $3 RETURNING *`;
+    deleteByIdRecordsQuery = `
+  DELETE FROM ${this.tblName} 
+  WHERE user_attribute_id = $1 RETURNING *`;
     client;
     constructor(client) {
         this.client = client;
@@ -17,7 +31,7 @@ export class RoleAttributeService {
         catch (error) {
             console.error(error);
             if (error instanceof Error)
-                throw new Error(`Error in truncating role attribute: ${error.message}`);
+                throw new Error(`Error in truncating user attribute: ${error.message}`);
         }
         finally {
             this.client.release();
@@ -25,14 +39,14 @@ export class RoleAttributeService {
     }
     async insert(roleAttribute) {
         try {
-            const dbResult = await this.client.query(this.insertRoleQuery, [
-                roleAttribute.roleId,
+            const dbResult = await this.client.query(this.insertQuery, [
+                roleAttribute.userId,
                 roleAttribute.appName,
                 roleAttribute.attributeName,
             ]);
             return {
-                id: dbResult.rows[0].role_attribute_id,
-                roleId: dbResult.rows[0].role_id,
+                id: dbResult.rows[0].user_attribute_id,
+                userId: dbResult.rows[0].user_id,
                 appName: dbResult.rows[0].app_name,
                 attributeName: dbResult.rows[0].attribute_name,
             };
@@ -40,22 +54,22 @@ export class RoleAttributeService {
         catch (error) {
             console.error(error);
             if (error instanceof Error)
-                throw new Error(`Error in inserting role attribute: ${error.message}`);
+                throw new Error(`Error in inserting user attribute: ${error.message}`);
         }
         finally {
             this.client.release();
         }
     }
-    async list(roleId) {
+    async list(userId) {
         try {
             const dbResult = await this.client.query(this.selectAllRecordsQuery, [
-                roleId,
+                userId,
             ]);
             if (dbResult.rows.length <= 0)
                 return undefined;
             return dbResult.rows.map((row) => ({
-                id: row.role_attribute_id,
-                roleId: row.role_id,
+                id: row.user_attribute_id,
+                userId: row.user_id,
                 appName: row.app_name,
                 attributeName: row.attribute_name,
             }));
@@ -63,7 +77,7 @@ export class RoleAttributeService {
         catch (error) {
             console.error(error);
             if (error instanceof Error)
-                throw new Error(`Error in retrieving role attribute: ${error.message}`);
+                throw new Error(`Error in retrieving user attribute: ${error.message}`);
         }
         finally {
             this.client.release();
@@ -77,8 +91,8 @@ export class RoleAttributeService {
             if (dbResult.rows.length === 0)
                 return undefined;
             return {
-                id: dbResult.rows[0].role_attribute_id,
-                roleId: dbResult.rows[0].role_id,
+                id: dbResult.rows[0].user_attribute_id,
+                userId: dbResult.rows[0].user_id,
                 appName: dbResult.rows[0].app_name,
                 attributeName: dbResult.rows[0].attribute_name,
             };
@@ -86,7 +100,7 @@ export class RoleAttributeService {
         catch (error) {
             console.error(error);
             if (error instanceof Error)
-                throw new Error(`Error in retrieving role attribute detail: ${error.message}`);
+                throw new Error(`Error in retrieving user attribute detail: ${error.message}`);
         }
         finally {
             this.client.release();
@@ -94,7 +108,7 @@ export class RoleAttributeService {
     }
     async update(roleAttribute, id) {
         try {
-            const dbResult = await this.client.query(this.updateRoleQuery, [
+            const dbResult = await this.client.query(this.updateQuery, [
                 roleAttribute.appName,
                 roleAttribute.attributeName,
                 id,
@@ -102,8 +116,8 @@ export class RoleAttributeService {
             if (dbResult.rows.length === 0)
                 return undefined;
             return {
-                id: dbResult.rows[0].role_attribute_id,
-                roleId: dbResult.rows[0].role_id,
+                id: dbResult.rows[0].user_attribute_id,
+                userId: dbResult.rows[0].user_id,
                 appName: dbResult.rows[0].app_name,
                 attributeName: dbResult.rows[0].attribute_name,
             };
@@ -111,7 +125,7 @@ export class RoleAttributeService {
         catch (error) {
             console.error(error);
             if (error instanceof Error)
-                throw new Error(`Error in updating role attribute: ${error.message}`);
+                throw new Error(`Error in updating user attribute: ${error.message}`);
         }
         finally {
             this.client.release();
@@ -125,8 +139,8 @@ export class RoleAttributeService {
             if (dbResult.rows.length === 0)
                 return undefined;
             return {
-                id: dbResult.rows[0].role_attribute_id,
-                roleId: dbResult.rows[0].role_id,
+                id: dbResult.rows[0].user_attribute_id,
+                userId: dbResult.rows[0].user_id,
                 appName: dbResult.rows[0].app_name,
                 attributeName: dbResult.rows[0].attribute_name,
             };
@@ -134,7 +148,7 @@ export class RoleAttributeService {
         catch (error) {
             console.error(error);
             if (error instanceof Error)
-                throw new Error(`Error in deleting role attribute: ${error.message}`);
+                throw new Error(`Error in deleting user attribute: ${error.message}`);
         }
         finally {
             this.client.release();

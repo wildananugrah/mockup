@@ -30,13 +30,11 @@ export class RoleAttributeService implements IRoleAttributeService {
     roleAttribute: IRoleAttribute
   ): Promise<IRoleAttribute | undefined> {
     try {
-      console.log(roleAttribute.attributeName);
       const dbResult = await this.client.query(this.insertRoleQuery, [
         roleAttribute.roleId,
         roleAttribute.appName,
         roleAttribute.attributeName,
       ]);
-      console.log(dbResult.rows[0]);
       return {
         id: dbResult.rows[0].role_attribute_id,
         roleId: dbResult.rows[0].role_id,

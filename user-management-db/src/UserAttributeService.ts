@@ -53,13 +53,11 @@ export class UserAttributeService implements IUserAttributeService {
     roleAttribute: IUserAttribute
   ): Promise<IUserAttribute | undefined> {
     try {
-      console.log(roleAttribute.attributeName);
       const dbResult = await this.client.query(this.insertQuery, [
         roleAttribute.userId,
         roleAttribute.appName,
         roleAttribute.attributeName,
       ]);
-      console.log(dbResult.rows[0]);
       return {
         id: dbResult.rows[0].user_attribute_id,
         userId: dbResult.rows[0].user_id,

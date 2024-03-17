@@ -1,7 +1,10 @@
+// TODO: there shuold be a selectByUsername query then validate the password in app;
+// not in query! because the username should be unqiue it helps the system to search the username easily.
+// TODO: it supposed to be included user attributes.
 export class UserService {
     tblName = "tbl_mst_user";
     deleteAllRecordsQuery = `DELETE FROM ${this.tblName}`;
-    selectByUsernameAndPassword = `SELECT * FROM ${this.tblName} WHERE username=$1 and password=$2`; // TODO: it supposed to be included user attributes.
+    selectByUsername = `SELECT * FROM ${this.tblName} WHERE username=$1`;
     insertUser = `INSERT INTO ${this.tblName} (username, password) VALUES ($1, $2) RETURNING *`;
     client;
     constructor(client) {
@@ -27,7 +30,7 @@ export class UserService {
                 user.password,
             ]);
             return {
-                id: dbResult.rows[0].id,
+                id: dbResult.rows[0].user_id,
                 username: dbResult.rows[0].username,
                 password: dbResult.rows[0].password,
             };
@@ -43,11 +46,13 @@ export class UserService {
     }
     async login(user) {
         try {
-            const dbResult = await this.client.query(this.selectByUsernameAndPassword, [user.username, user.password]);
+            const dbResult = await this.client.query(this.selectByUsername, [
+                user.username,
+            ]);
             if (dbResult.rows.length === 0)
                 return undefined;
             return {
-                id: dbResult.rows[0].id,
+                id: dbResult.rows[0].user_id,
                 username: dbResult.rows[0].username,
                 password: dbResult.rows[0].password,
             };

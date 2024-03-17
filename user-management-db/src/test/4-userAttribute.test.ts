@@ -71,7 +71,6 @@ describe("User Service", () => {
     const userService: IUserService = new UserService(await pool.connect());
     const dbUser = await userService.register(userData);
     if (dbUser === undefined) throw new Error(`Can not register user`);
-    console.log(dbUser);
     data.userId = dbUser.id === undefined ? "" : dbUser.id;
   });
   it("it should create a user attribute", async () => {

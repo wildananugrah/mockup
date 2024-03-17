@@ -29,7 +29,7 @@ describe("User Service", () => {
     let todoId = "";
     const data = {
         username: "wildananugrah",
-        password: "P@ssw0rd!",
+        password: "p@ssw0rd",
     };
     it("should be registered new user", async () => {
         const userService = new UserService(await pool.connect());
@@ -44,6 +44,7 @@ describe("User Service", () => {
         const user = await userService.login(data);
         if (user === undefined)
             fail();
+        expect(typeof user.id).toBe("string");
         expect(user.username).toBe(data.username);
         expect(user.password).toBe(data.password);
     });

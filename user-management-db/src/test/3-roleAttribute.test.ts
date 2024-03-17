@@ -76,7 +76,6 @@ describe("Role Service", () => {
   it("it should create a role attribute", async () => {
     const roleAttributeService: IRoleAttributeService =
       new RoleAttributeService(await pool.connect());
-    console.log(data);
     const dbRoleAttribute = await roleAttributeService.insert(data);
     if (dbRoleAttribute === undefined) fail();
     expect(dbRoleAttribute.roleId).toBe(data.roleId);

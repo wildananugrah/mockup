@@ -32,7 +32,6 @@ export class UserService implements IUserService {
         user.username,
         user.password,
       ]);
-      console.log(dbResult);
       return {
         id: dbResult.rows[0].user_id,
         username: dbResult.rows[0].username,

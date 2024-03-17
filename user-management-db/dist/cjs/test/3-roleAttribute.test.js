@@ -65,7 +65,6 @@ describe("Role Service", () => {
     }));
     it("it should create a role attribute", () => __awaiter(void 0, void 0, void 0, function* () {
         const roleAttributeService = new RoleAttributeService_1.RoleAttributeService(yield pool.connect());
-        console.log(data);
         const dbRoleAttribute = yield roleAttributeService.insert(data);
         if (dbRoleAttribute === undefined)
             fail();

@@ -20,6 +20,11 @@ export interface IUserAttribute {
   appName: string;
   attributeName: string[];
 }
+export interface IUserRoleTrx {
+  id?: string;
+  userId: string;
+  roleId: string;
+}
 export interface IToken {
   token: string;
   expired: number;
@@ -66,4 +71,10 @@ export interface IUserLogic {
   login(username: string, password: string): Promise<IToken | undefined>;
   validateToken(token: string): Promise<IUser | undefined>;
   refreshToken(token: string, expired: number): Promise<IToken | undefined>;
+}
+export interface IUserRoleTrxService {
+  truncate(): Promise<void>;
+  insert(userRole: IUserRoleTrx): Promise<IUserRoleTrx | undefined>;
+  list(userId: string): Promise<IUserAttribute[] | undefined>;
+  delete(id: string): Promise<void>;
 }

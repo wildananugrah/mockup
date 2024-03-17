@@ -40,7 +40,7 @@ describe("User Service", () => {
     let todoId = "";
     const data = {
         username: "wildananugrah",
-        password: "P@ssw0rd!",
+        password: "p@ssw0rd",
     };
     it("should be registered new user", () => __awaiter(void 0, void 0, void 0, function* () {
         const userService = new UserService_1.UserService(yield pool.connect());
@@ -55,6 +55,7 @@ describe("User Service", () => {
         const user = yield userService.login(data);
         if (user === undefined)
             fail();
+        expect(typeof user.id).toBe("string");
         expect(user.username).toBe(data.username);
         expect(user.password).toBe(data.password);
     }));

@@ -3,7 +3,7 @@ import { PoolClient } from "pg";
 export declare class UserService implements IUserService {
     tblName: string;
     deleteAllRecordsQuery: string;
-    selectByUsernameAndPassword: string;
+    selectByUsername: string;
     insertUser: string;
     client: PoolClient;
     constructor(client: PoolClient);

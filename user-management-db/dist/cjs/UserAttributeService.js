@@ -9,16 +9,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RoleAttributeService = void 0;
-class RoleAttributeService {
+exports.UserAttributeService = void 0;
+class UserAttributeService {
     constructor(client) {
-        this.tblName = "tbl_mst_role_attribute";
-        this.deleteAllRecordsQuery = `DELETE FROM ${this.tblName}`;
-        this.insertRoleQuery = `INSERT INTO ${this.tblName}(role_id, app_name, attribute_name) VALUES($1, $2, $3) RETURNING *`;
-        this.selectAllRecordsQuery = `SELECT role_id, app_name, attribute_name FROM ${this.tblName} WHERE role_id = $1`;
-        this.selectByIdRecordsQuery = `SELECT role_id, app_name, attribute_name FROM ${this.tblName} WHERE role_attribute_id = $1`;
-        this.updateRoleQuery = `UPDATE ${this.tblName} SET app_name = $1, attribute_name = $2 WHERE role_attribute_id = $3 RETURNING *`;
-        this.deleteByIdRecordsQuery = `DELETE FROM ${this.tblName} WHERE role_attribute_id = $1 RETURNING *`;
+        this.tblName = "tbl_mst_user_attribute";
+        this.deleteAllRecordsQuery = `
+  DELETE FROM ${this.tblName}`;
+        this.insertQuery = `
+  INSERT INTO ${this.tblName}(user_id, app_name, attribute_name) 
+  VALUES($1, $2, $3) RETURNING *`;
+        this.selectAllRecordsQuery = `
+  SELECT 
+  user_attribute_id, user_id, app_name, attribute_name 
+  FROM ${this.tblName} WHERE user_id = $1`;
+        this.selectByIdRecordsQuery = `
+  SELECT 
+  user_attribute_id, user_id, app_name, attribute_name 
+  FROM ${this.tblName} WHERE user_attribute_id = $1`;
+        this.updateQuery = `
+  UPDATE ${this.tblName} 
+  SET app_name = $1, attribute_name = $2 
+  WHERE user_attribute_id = $3 RETURNING *`;
+        this.deleteByIdRecordsQuery = `
+  DELETE FROM ${this.tblName} 
+  WHERE user_attribute_id = $1 RETURNING *`;
         this.client = client;
     }
     truncate() {
@@ -29,7 +43,7 @@ class RoleAttributeService {
             catch (error) {
                 console.error(error);
                 if (error instanceof Error)
-                    throw new Error(`Error in truncating role attribute: ${error.message}`);
+                    throw new Error(`Error in truncating user attribute: ${error.message}`);
             }
             finally {
                 this.client.release();
@@ -39,14 +53,14 @@ class RoleAttributeService {
     insert(roleAttribute) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const dbResult = yield this.client.query(this.insertRoleQuery, [
-                    roleAttribute.roleId,
+                const dbResult = yield this.client.query(this.insertQuery, [
+                    roleAttribute.userId,
                     roleAttribute.appName,
                     roleAttribute.attributeName,
                 ]);
                 return {
-                    id: dbResult.rows[0].role_attribute_id,
-                    roleId: dbResult.rows[0].role_id,
+                    id: dbResult.rows[0].user_attribute_id,
+                    userId: dbResult.rows[0].user_id,
                     appName: dbResult.rows[0].app_name,
                     attributeName: dbResult.rows[0].attribute_name,
                 };
@@ -54,24 +68,24 @@ class RoleAttributeService {
             catch (error) {
                 console.error(error);
                 if (error instanceof Error)
-                    throw new Error(`Error in inserting role attribute: ${error.message}`);
+                    throw new Error(`Error in inserting user attribute: ${error.message}`);
             }
             finally {
                 this.client.release();
             }
         });
     }
-    list(roleId) {
+    list(userId) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const dbResult = yield this.client.query(this.selectAllRecordsQuery, [
-                    roleId,
+                    userId,
                 ]);
                 if (dbResult.rows.length <= 0)
                     return undefined;
                 return dbResult.rows.map((row) => ({
-                    id: row.role_attribute_id,
-                    roleId: row.role_id,
+                    id: row.user_attribute_id,
+                    userId: row.user_id,
                     appName: row.app_name,
                     attributeName: row.attribute_name,
                 }));
@@ -79,7 +93,7 @@ class RoleAttributeService {
             catch (error) {
                 console.error(error);
                 if (error instanceof Error)
-                    throw new Error(`Error in retrieving role attribute: ${error.message}`);
+                    throw new Error(`Error in retrieving user attribute: ${error.message}`);
             }
             finally {
                 this.client.release();
@@ -95,8 +109,8 @@ class RoleAttributeService {
                 if (dbResult.rows.length === 0)
                     return undefined;
                 return {
-                    id: dbResult.rows[0].role_attribute_id,
-                    roleId: dbResult.rows[0].role_id,
+                    id: dbResult.rows[0].user_attribute_id,
+                    userId: dbResult.rows[0].user_id,
                     appName: dbResult.rows[0].app_name,
                     attributeName: dbResult.rows[0].attribute_name,
                 };
@@ -104,7 +118,7 @@ class RoleAttributeService {
             catch (error) {
                 console.error(error);
                 if (error instanceof Error)
-                    throw new Error(`Error in retrieving role attribute detail: ${error.message}`);
+                    throw new Error(`Error in retrieving user attribute detail: ${error.message}`);
             }
             finally {
                 this.client.release();
@@ -114,7 +128,7 @@ class RoleAttributeService {
     update(roleAttribute, id) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const dbResult = yield this.client.query(this.updateRoleQuery, [
+                const dbResult = yield this.client.query(this.updateQuery, [
                     roleAttribute.appName,
                     roleAttribute.attributeName,
                     id,
@@ -122,8 +136,8 @@ class RoleAttributeService {
                 if (dbResult.rows.length === 0)
                     return undefined;
                 return {
-                    id: dbResult.rows[0].role_attribute_id,
-                    roleId: dbResult.rows[0].role_id,
+                    id: dbResult.rows[0].user_attribute_id,
+                    userId: dbResult.rows[0].user_id,
                     appName: dbResult.rows[0].app_name,
                     attributeName: dbResult.rows[0].attribute_name,
                 };
@@ -131,7 +145,7 @@ class RoleAttributeService {
             catch (error) {
                 console.error(error);
                 if (error instanceof Error)
-                    throw new Error(`Error in updating role attribute: ${error.message}`);
+                    throw new Error(`Error in updating user attribute: ${error.message}`);
             }
             finally {
                 this.client.release();
@@ -147,8 +161,8 @@ class RoleAttributeService {
                 if (dbResult.rows.length === 0)
                     return undefined;
                 return {
-                    id: dbResult.rows[0].role_attribute_id,
-                    roleId: dbResult.rows[0].role_id,
+                    id: dbResult.rows[0].user_attribute_id,
+                    userId: dbResult.rows[0].user_id,
                     appName: dbResult.rows[0].app_name,
                     attributeName: dbResult.rows[0].attribute_name,
                 };
@@ -156,7 +170,7 @@ class RoleAttributeService {
             catch (error) {
                 console.error(error);
                 if (error instanceof Error)
-                    throw new Error(`Error in deleting role attribute: ${error.message}`);
+                    throw new Error(`Error in deleting user attribute: ${error.message}`);
             }
             finally {
                 this.client.release();
@@ -164,4 +178,4 @@ class RoleAttributeService {
         });
     }
 }
-exports.RoleAttributeService = RoleAttributeService;
+exports.UserAttributeService = UserAttributeService;
