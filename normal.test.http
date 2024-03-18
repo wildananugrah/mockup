@@ -2,6 +2,10 @@
 @host=http://localhost:14000 
 # bun app
 # @host=http://localhost:24000 
+# express app
+# @host=http://localhost:34000
+# nest app
+# @host=http://localhost:44000 
 
 POST {{host}}/api/users/register
 Content-Type: application/json
